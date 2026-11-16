@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jogo da Memória</title>
+    <title>Jogo da Memória Mobile</title>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -20,35 +21,51 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
+            padding: 15px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .logo-container svg {
+            width: 45px;
+            height: 45px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
 
         h1 {
-            margin-bottom: 10px;
-            font-size: 2.5rem;
+            font-size: 1.8rem;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            text-align: center;
         }
 
         .score-board {
             margin-bottom: 20px;
-            font-size: 1.2rem;
+            font-size: 1rem;
             background: rgba(255, 255, 255, 0.1);
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: 8px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
         }
 
         .game-container {
             display: grid;
-            grid-template-columns: repeat(4, 100px);
-            grid-gap: 15px;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 10px;
+            width: 100%;
+            max-width: 360px;
             perspective: 1000px;
         }
 
         .card {
-            width: 100px;
-            height: 100px;
+            aspect-ratio: 1 / 1;
             position: relative;
             transform-style: preserve-3d;
-            transition: transform 0.5s;
+            transition: transform 0.4s ease;
             cursor: pointer;
         }
 
@@ -64,9 +81,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5rem;
+            font-size: 2rem;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            user-select: none;
         }
 
         .card-front {
@@ -78,12 +96,12 @@
         .card-back {
             background-color: #ff4757;
             color: white;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
         }
 
         .restart-btn {
             margin-top: 25px;
-            padding: 12px 25px;
+            padding: 12px 24px;
             font-size: 1rem;
             font-weight: bold;
             color: #fff;
@@ -95,14 +113,28 @@
             transition: background 0.3s;
         }
 
-        .restart-btn:hover {
-            background-color: #26af5f;
+        .restart-btn:active {
+            transform: scale(0.96);
         }
     </style>
 </head>
 <body>
 
-    <h1>🎮 Jogo da Memória</h1>
+    <div class="logo-container">
+        <!-- Logo Vetorial Otimizada para Celular -->
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#ff4757;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#ff6b81;stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            <rect x="10" y="10" width="80" height="80" rx="18" fill="url(#logoGrad)" />
+            <text x="50" y="65" font-size="45" text-anchor="middle" fill="#ffffff" font-weight="bold">🧠</text>
+        </svg>
+        <h1>Jogo da Memória</h1>
+    </div>
+
     <div class="score-board">Movimentos: <span id="moves">0</span></div>
 
     <div class="game-container" id="gameBoard"></div>
@@ -114,7 +146,6 @@
         const movesSpan = document.getElementById('moves');
         
         const emojis = ['🍎', '🍌', '🍇', '🍉', '🍓', '🍒', '🍍', '🥝'];
-        let cards = [];
         let hasFlippedCard = false;
         let lockBoard = false;
         let firstCard, secondCard;
@@ -131,7 +162,6 @@
             firstCard = null;
             secondCard = null;
 
-            // Duplica os emojis para formar os pares e embaralha
             const gameEmojis = [...emojis, ...emojis].sort(() => Math.random() - 0.5);
 
             gameEmojis.forEach(emoji => {
@@ -144,6 +174,7 @@
                     <div class="card-face card-back">❓</div>
                 `;
 
+                // Suporte otimizado para toque em celulares
                 card.addEventListener('click', flipCard);
                 board.appendChild(card);
             });
@@ -177,7 +208,7 @@
                 if (matches === emojis.length) {
                     setTimeout(() => {
                         alert(`Parabéns! Você venceu em ${moves} movimentos! 🎉`);
-                    }, 500);
+                    }, 400);
                 }
             } else {
                 unflipCards();
@@ -196,7 +227,7 @@
                 firstCard.classList.remove('flip');
                 secondCard.classList.remove('flip');
                 resetBoard();
-            }, 1000);
+            }, 800);
         }
 
         function resetBoard() {
@@ -204,7 +235,6 @@
             [firstCard, secondCard] = [null, null];
         }
 
-        // Inicia o jogo automaticamente ao carregar a página
         startGame();
     </script>
 </body>
